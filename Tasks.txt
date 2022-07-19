@@ -1,0 +1,109 @@
+Задачки по SQL решенные на тренажере www.sql-ex.ru в режиме обучение
+
+1.Условие:
+Найдите номер модели, скорость и размер жесткого диска для всех ПК стоимостью менее 500 дол. Вывести: model, speed и hd
+Решение:
+Select model,speed,hd from pc where price < 500
+
+2.Условие:
+Найдите производителей принтеров. Вывести: maker
+Решение:
+Select distinct maker from product
+Where type = 'printer'
+
+
+3.Условие:
+Найдите номер модели, объем памяти и размеры экранов ПК-блокнотов, цена которых превышает 1000 дол.
+Решение:
+Select model, ram, screen from laptop where price > 1000
+
+4.Условие:
+Найдите все записи таблицы Printer для цветных принтеров.
+Решение:
+Select * from printer where color = 'y'
+
+5.Условие:
+Найдите номер модели, скорость и размер жесткого диска ПК, имеющих 12x или 24x CD и цену менее 600 дол.
+Решение:
+Select model , speed ,hd
+From pc
+Where cd in ('12x' , '24x') and
+Price < 600
+
+6.Условие:
+Для каждого производителя, 
+выпускающего ПК-блокноты c объёмом жесткого диска не менее 10 Гбайт, найти скорости таких ПК-блокнотов. 
+Вывод: производитель, скорость.
+Решение:
+Select distinct product.maker, laptop.speed
+From product inner join laptop on
+Product.model=laptop.model
+Where hd=10 or hd>10
+
+7.Условие:
+Найдите номера моделей и цены всех имеющихся в продаже продуктов (любого типа) производителя B (латинская буква).
+Решение:
+Select  pc.model,pc.price from PC
+join product on product.model=pc.model
+Where maker='b'
+Union
+Select laptop.model,laptop.price from laptop
+Join product on product.model=laptop.model
+Where maker='b'
+Union 
+Select printer.model,printer.price from printer
+join product on product.model=printer.model
+Where maker='b'
+
+8.Условие:
+Найдите производителя, выпускающего ПК, но не ПК-блокноты.
+Решение:
+Select Distinct maker  from product
+Where type ='pc'
+Except 
+Select distinct maker from product
+Where type='laptop'
+
+9.Условие:
+Найдите производителей ПК с процессором не менее 450 Мгц. Вывести: Maker
+Решение:
+Select distinct maker from product
+Join pc on product.model=pc.model
+Where speed >= 450
+
+10.Условие:
+Найдите модели принтеров, имеющих самую высокую цену. Вывести: model, price
+Решение:
+Select model,price from printer
+Where  price = (select max (price) from printer)
+
+11.Условие:
+Найдите среднюю скорость ПК.
+Решение:
+Select avg (speed) from pc
+
+12.Условие:
+Найдите среднюю скорость ПК-блокнотов, цена которых превышает 1000 дол.
+Решение:
+Select avg (speed) from laptop
+Where price > 1000
+
+13.Условие:
+Найдите среднюю скорость ПК, выпущенных производителем A.
+Решение:
+Select avg (speed) from pc
+Where model in ( select model from  product where maker ='A')
+
+14.Условие:
+Найдите класс, имя и страну для кораблей из таблицы Ships, имеющих не менее 10 орудий.
+Решение:
+Select  distinct ships.class,ships.name,classes.country from ships
+Join classes on ships.class=classes.class
+Where numguns  >=10
+
+15.Условие:
+Найдите размеры жестких дисков, совпадающих у двух и более PC. Вывести: HD
+Решение:
+Select hd from pc
+Group by hd
+Having count (hd) >=2
