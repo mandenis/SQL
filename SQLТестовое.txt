@@ -1,0 +1,85 @@
+                                                                   Тестовое от компании:
+
+Описание БД:
+В БД есть 3 сущности: FIO_person, Salary и JobPosition.
+1) Таблица FIO_person содержит атрибуты- ID (id сотрудника), FIO (ФИО сотрудника)
+2) Таблица Salary содержит атрибуты- Salary_ID (id записи по ЗП), Person_ID (внешний ключ к
+таблице FIO_person), Value (ЗП сотрудника)
+3) Таблица JobPosition содержит атрибуты- Position_ID (id записи по должности), Person_ID
+(внешний ключ к таблице FIO_person), NamePosition (название должности), Duration (колво лет в должности)
+Напишите SQL запросы:
+1.Получить список всех сотрудников с именем с ФИО - Петров Максим Егорович.
+2.Получить список всех сотрудников по имени Иван.
+3.Получить список всех ФИО сотрудников по должности «Разработчик» с зарплатой, большей
+10 000 рублей.
+4.Получить отсортированный в алфавитном порядке список всех существующих должностей в
+компании.
+5.Вывести список, содержащий ФИО, ЗП, должность и кол-во лет в должности для сотрудников,
+которые проработали от 1 до 10 лет.
+
+                                                                             Решение:
+
+1. Таблица FIO_Person содержит атрибуты 
+Create Table FIO_Person
+(
+    ID INT,
+    FIO Varchar (100) PRIMARY KEY
+ );
+ 
+Create Table Salary
+(
+    Salary_ID PRIMARY KEY,
+    Person_ID varchar (100) REFERENCES FIO_Person (FIO),
+    Value INT
+ );
+ 
+Create Table JobPosition
+(
+    Position_ID PRIMARY KEY,
+    Person_ID varchar (100) REFERENCES FIO_Person (FIO),
+    NamePosition varchar (100),
+    Duration INT
+ );
+
+
+INSERT INTO FIO_Person (ID, FIO) Values (1, 'Петров Максим Егорович');
+INSERT INTO FIO_Person (ID, FIO) Values (2, 'Иванов Иван Иванович');
+INSERT INTO FIO_Person (ID, FIO) Values (3, 'Сагитов Рамиль Рустамович');
+INSERT INTO FIO_Person (ID, FIO) Values (4, 'Новикова Екатерина Сергеевна');
+INSERT INTO FIO_Person (ID, FIO) Values (5, 'Васильев Денис Александрович');
+INSERT INTO FIO_Person (ID, FIO) Values (6, 'Сидоров Иван Александрович');
+
+INSERT INTO Salary (Salary_ID, Person_ID, Value) Values (1, 'Петров Максим Егорович', 10000); 
+INSERT INTO Salary (Salary_ID, Person_ID, Value) Values (2, 'Иванов Иван Иванович', 20000);
+INSERT INTO Salary (Salary_ID, Person_ID, Value) Values (3, 'Сагитов Рамиль Рустамович', 9000);
+INSERT INTO Salary (Salary_ID, Person_ID, Value) Values (4, 'Новикова Екатерина Сергеевна', 12000);
+INSERT INTO Salary (Salary_ID, Person_ID, Value) Values (5, 'Васильев Денис Александрович', 7000);
+INSERT INTO Salary (Salary_ID, Person_ID, Value) Values (6, 'Сидоров Иван Александрович', 8500);
+
+
+INSERT INTO JobPosition (Position_ID, Person_ID, NamePosition, Duration) Values (1, 'Петров Максим Егорович', 'Разработчик', 7);
+INSERT INTO JobPosition (Position_ID, Person_ID, NamePosition, Duration) Values (2, 'Иванов Иван Иванович', 'Дева', 12);
+INSERT INTO JobPosition (Position_ID, Person_ID, NamePosition, Duration) Values (3, 'Сагитов Рамиль Рустамович', 'Менеджер', 3);
+INSERT INTO JobPosition (Position_ID, Person_ID, NamePosition, Duration) Values (4, 'Новикова Екатерина Сергеевна', 'Разработчик', 5);
+INSERT INTO JobPosition (Position_ID, Person_ID, NamePosition, Duration) Values (5, 'Васильев Денис Александрович', 'Тестировщик', 1);
+INSERT INTO JobPosition (Position_ID, Person_ID, NamePosition, Duration) Values (6, 'Сидоров Иван Александрович','Разработчик', 6);
+
+Select FIO from FIO_Person
+Where FIO = 'Петров Максим Егорович';
+
+Select FIO from FIO_Person
+Where FIO LIKE '%Иван%';
+
+Select JobPosition.Person_ID, JobPosition.NamePosition, Salary.Value
+From JobPosition
+Join Salary on JobPosition.Person_ID = Salary.Person_ID
+Where Value > 10000 and NamePosition = 'Разработчик';
+
+Select NamePosition from JobPosition
+Order by NamePosition;
+
+Select FIO_Person.FIO, Salary.Value, JobPosition.NamePosition, JobPosition.Duration
+From FIO_Person 
+Join Salary on FIO_Person.FIO = Salary.Person_ID
+Right join JobPosition on Salary.Person_ID = JobPosition.Person_ID
+Where Duration >= 1 and Duration <= 10;
